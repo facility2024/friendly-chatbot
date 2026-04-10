@@ -13,6 +13,7 @@ import {
   FileText,
   LogOut,
   Apple,
+  Shield,
 } from "lucide-react";
 
 const modules = [
@@ -30,6 +31,7 @@ const modules = [
 const Dashboard = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -39,6 +41,10 @@ const Dashboard = () => {
         return;
       }
       setUserName(data.user.user_metadata?.name || "Usuário");
+      
+      // Check admin role
+      const { data: hasAdmin } = await supabase.rpc("has_role", { _user_id: data.user.id, _role: "admin" });
+      if (hasAdmin) setIsAdmin(true);
     };
     getUser();
   }, [navigate]);
@@ -87,6 +93,19 @@ const Dashboard = () => {
               </span>
             </button>
           ))}
+          {isAdmin && (
+            <button
+              onClick={() => navigate("/admin")}
+              className="flex flex-col items-center gap-3 rounded-2xl bg-card p-4 shadow-md transition-transform active:scale-95 ring-2 ring-primary"
+            >
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-600">
+                <Shield className="h-7 w-7 text-primary-foreground" />
+              </div>
+              <span className="text-center text-sm font-medium leading-tight text-card-foreground">
+                Painel Admin
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </div>

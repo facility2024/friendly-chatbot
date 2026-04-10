@@ -1,37 +1,46 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Apple } from "lucide-react";
+import logoImg from "@/assets/nutrivision-logo.jpeg";
 
 const SplashScreen = () => {
   const navigate = useNavigate();
+  const [phase, setPhase] = useState<"logo" | "done">("logo");
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/login");
-    }, 3000);
+      setPhase("done");
+      setTimeout(() => navigate("/login"), 300);
+    }, 4000);
     return () => clearTimeout(timer);
   }, [navigate]);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gradient-primary-vertical px-6">
-      <div className="animate-fade-in flex flex-col items-center gap-6 text-center">
-        <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-white/20 backdrop-blur-sm">
-          <Apple className="h-14 w-14 text-primary-foreground" />
-        </div>
-        <div>
-          <h1 className="text-5xl font-bold tracking-tight text-primary-foreground">
-            Nutrivision
-          </h1>
-          <p className="mt-3 text-lg text-primary-foreground/80">
-            Sua saúde em suas mãos
-          </p>
-        </div>
-        <div className="mt-8 flex gap-2">
-          <div className="h-2 w-2 animate-pulse rounded-full bg-primary-foreground/60" />
-          <div className="h-2 w-2 animate-pulse rounded-full bg-primary-foreground/60 [animation-delay:0.2s]" />
-          <div className="h-2 w-2 animate-pulse rounded-full bg-primary-foreground/60 [animation-delay:0.4s]" />
-        </div>
-      </div>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6">
+      <img
+        src={logoImg}
+        alt="Nutrivision"
+        className="w-72 max-w-[80vw] object-contain"
+        style={{
+          animation: "zoomIn 4s ease-out forwards",
+          opacity: phase === "done" ? 0 : 1,
+          transition: "opacity 0.3s",
+        }}
+      />
+      <style>{`
+        @keyframes zoomIn {
+          0% {
+            transform: scale(0.3);
+            opacity: 0;
+          }
+          15% {
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 };

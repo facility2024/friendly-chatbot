@@ -73,7 +73,7 @@ const Login = () => {
         <h1 className="text-3xl font-bold text-primary-foreground">Nutrivision</h1>
       </div>
 
-      <Card className="w-full max-w-md border-0 shadow-2xl">
+      <Card className="relative z-10 w-full max-w-md border-0 shadow-2xl">
         <CardHeader className="pb-2 pt-6 text-center">
           <h2 className="text-2xl font-bold text-foreground">
             {isSignup ? "Criar conta" : "Entrar"}

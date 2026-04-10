@@ -1,17 +1,25 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Store, MapPin, ExternalLink } from "lucide-react";
+import { ArrowLeft, Store, MapPin, ExternalLink, Phone, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-
-const lojas = [
-  { nome: "Mundo Verde", endereco: "Av. Paulista, 1000", tel: "(11) 3456-7890" },
-  { nome: "Empório Natural", endereco: "Rua Augusta, 500", tel: "(11) 2345-6789" },
-  { nome: "Casa da Natureza", endereco: "Rua Oscar Freire, 200", tel: "(11) 5678-1234" },
-  { nome: "Bio Vida", endereco: "Av. Brasil, 1500", tel: "(11) 9876-5432" },
-  { nome: "Natural da Terra", endereco: "Av. Rebouças, 800", tel: "(11) 1234-5678" },
-];
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 const Lojas = () => {
   const navigate = useNavigate();
+
+  const { data: lojas = [], isLoading } = useQuery({
+    queryKey: ["stores"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("stores")
+        .select("*")
+        .eq("published", true)
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -23,23 +31,46 @@ const Lojas = () => {
       </div>
 
       <div className="mx-auto max-w-lg px-5 py-6 space-y-4">
-        {lojas.map((l, i) => (
-          <Card key={i}>
-            <CardContent className="flex items-center gap-4 p-5">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-400 to-green-500">
-                <Store className="h-7 w-7 text-primary-foreground" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-base font-semibold text-foreground">{l.nome}</h3>
-                <p className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <MapPin className="h-3 w-3" /> {l.endereco}
-                </p>
-                <p className="text-sm text-muted-foreground">📞 {l.tel}</p>
-              </div>
-              <ExternalLink className="h-5 w-5 text-muted-foreground" />
-            </CardContent>
-          </Card>
-        ))}
+        {isLoading ? (
+          <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>
+        ) : lojas.length === 0 ? (
+          <p className="py-12 text-center text-muted-foreground">Nenhuma loja cadastrada.</p>
+        ) : (
+          lojas.map((l) => (
+            <Card key={l.id}>
+              {l.photo_url && <img src={l.photo_url} alt={l.name} className="h-40 w-full object-cover rounded-t-lg" />}
+              <CardContent className="p-5 space-y-3">
+                <h3 className="text-lg font-semibold text-foreground">{l.name}</h3>
+                {l.address && (
+                  <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <MapPin className="h-4 w-4 shrink-0" /> {l.address}
+                  </p>
+                )}
+                {l.phone && (
+                  <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Phone className="h-4 w-4 shrink-0" /> {l.phone}
+                  </p>
+                )}
+                <div className="flex gap-2 pt-1">
+                  {l.whatsapp && (
+                    <Button asChild size="sm" className="gradient-primary text-primary-foreground">
+                      <a href={`https://wa.me/${l.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
+                        WhatsApp
+                      </a>
+                    </Button>
+                  )}
+                  {l.maps_link && (
+                    <Button asChild variant="outline" size="sm">
+                      <a href={l.maps_link} target="_blank" rel="noopener noreferrer">
+                        <ExternalLink className="mr-1 h-4 w-4" /> Ver localização
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
     </div>
   );

@@ -218,6 +218,153 @@ export type Database = {
         }
         Relationships: []
       }
+      recipes: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          prep_time: string
+          published: boolean
+          thumbnail_url: string
+          title: string
+          updated_at: string
+          video_url: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          prep_time?: string
+          published?: boolean
+          thumbnail_url?: string
+          title: string
+          updated_at?: string
+          video_url?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          prep_time?: string
+          published?: boolean
+          thumbnail_url?: string
+          title?: string
+          updated_at?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
+      stores: {
+        Row: {
+          address: string
+          created_at: string
+          id: string
+          maps_link: string
+          name: string
+          phone: string
+          photo_url: string
+          published: boolean
+          updated_at: string
+          whatsapp: string
+        }
+        Insert: {
+          address?: string
+          created_at?: string
+          id?: string
+          maps_link?: string
+          name: string
+          phone?: string
+          photo_url?: string
+          published?: boolean
+          updated_at?: string
+          whatsapp?: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          id?: string
+          maps_link?: string
+          name?: string
+          phone?: string
+          photo_url?: string
+          published?: boolean
+          updated_at?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
+      tips_pdf: {
+        Row: {
+          created_at: string
+          description: string
+          file_url: string
+          id: string
+          published: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          file_url?: string
+          id?: string
+          published?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          file_url?: string
+          id?: string
+          published?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      training_videos: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          duration: string
+          id: string
+          published: boolean
+          thumbnail_url: string
+          title: string
+          updated_at: string
+          video_url: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string
+          duration?: string
+          id?: string
+          published?: boolean
+          thumbnail_url?: string
+          title: string
+          updated_at?: string
+          video_url?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          duration?: string
+          id?: string
+          published?: boolean
+          thumbnail_url?: string
+          title?: string
+          updated_at?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
       user_profiles: {
         Row: {
           created_at: string
@@ -277,6 +424,63 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"] | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      walk_logs: {
+        Row: {
+          calories: number
+          created_at: string
+          distance_km: number
+          duration_seconds: number
+          id: string
+          steps: number
+          user_id: string
+        }
+        Insert: {
+          calories?: number
+          created_at?: string
+          distance_km?: number
+          duration_seconds?: number
+          id?: string
+          steps?: number
+          user_id: string
+        }
+        Update: {
+          calories?: number
+          created_at?: string
+          distance_km?: number
+          duration_seconds?: number
+          id?: string
+          steps?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      water_logs: {
+        Row: {
+          created_at: string
+          cups: number
+          date: string
+          goal_ml: number
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          cups?: number
+          date?: string
+          goal_ml?: number
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          cups?: number
+          date?: string
+          goal_ml?: number
+          id?: string
           user_id?: string
         }
         Relationships: []

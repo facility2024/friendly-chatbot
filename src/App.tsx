@@ -16,6 +16,13 @@ import Receitas from "./pages/Receitas";
 import Lojas from "./pages/Lojas";
 import Dicas from "./pages/Dicas";
 import NotFound from "./pages/NotFound";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminTreinos from "./pages/admin/AdminTreinos";
+import AdminReceitas from "./pages/admin/AdminReceitas";
+import AdminLojas from "./pages/admin/AdminLojas";
+import AdminDicas from "./pages/admin/AdminDicas";
+import AdminUsuarios from "./pages/admin/AdminUsuarios";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +45,14 @@ const App = () => (
           <Route path="/receitas" element={<Receitas />} />
           <Route path="/lojas" element={<Lojas />} />
           <Route path="/dicas" element={<Dicas />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="treinos" element={<AdminTreinos />} />
+            <Route path="receitas" element={<AdminReceitas />} />
+            <Route path="lojas" element={<AdminLojas />} />
+            <Route path="dicas" element={<AdminDicas />} />
+            <Route path="usuarios" element={<AdminUsuarios />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

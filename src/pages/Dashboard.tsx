@@ -12,9 +12,9 @@ import {
   Store,
   FileText,
   LogOut,
-  Apple,
   Shield,
 } from "lucide-react";
+import nutrivisionLogo from "@/assets/nutrivision-logo.jpeg";
 
 const modules = [
   { icon: Calculator, label: "Calcular IMC", path: "/imc", color: "from-emerald-500 to-green-600" },
@@ -60,9 +60,7 @@ const Dashboard = () => {
       <div className="gradient-primary px-5 pb-8 pt-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
-              <Apple className="h-6 w-6 text-primary-foreground" />
-            </div>
+            <img src={nutrivisionLogo} alt="Nutrivision" className="h-10 w-10 rounded-xl object-contain" />
             <span className="text-lg font-bold text-primary-foreground">Nutrivision</span>
           </div>
           <button onClick={handleLogout} className="rounded-xl bg-white/20 p-2.5">
@@ -83,7 +81,7 @@ const Dashboard = () => {
             <button
               key={mod.path}
               onClick={() => navigate(mod.path)}
-              className="flex flex-col items-center gap-3 rounded-2xl bg-card p-4 shadow-md transition-transform active:scale-95"
+              className="flex flex-col items-center gap-3 rounded-2xl bg-card p-4 shadow-md transition-all duration-200 active:scale-95 hover:scale-105 hover:shadow-xl hover:-translate-y-1"
             >
               <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${mod.color}`}>
                 <mod.icon className="h-7 w-7 text-primary-foreground" />
@@ -96,7 +94,7 @@ const Dashboard = () => {
           {isAdmin && (
             <button
               onClick={() => navigate("/admin")}
-              className="flex flex-col items-center gap-3 rounded-2xl bg-card p-4 shadow-md transition-transform active:scale-95 ring-2 ring-primary"
+              className="flex flex-col items-center gap-3 rounded-2xl bg-card p-4 shadow-md transition-all duration-200 active:scale-95 hover:scale-105 hover:shadow-xl hover:-translate-y-1 ring-2 ring-primary"
             >
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-yellow-500 to-orange-600">
                 <Shield className="h-7 w-7 text-primary-foreground" />

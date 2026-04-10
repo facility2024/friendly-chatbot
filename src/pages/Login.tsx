@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
-import nutrivisionLogo from "@/assets/nutrivision-icon.jpeg";
+import nutrivisionLogo from "@/assets/nutrivision-icon.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
@@ -64,7 +64,7 @@ const Login = () => {
         src={loginBg}
         alt=""
         className="absolute inset-0 h-full w-full object-cover"
-        style={{ filter: "blur(8px)", opacity: 0.7 }}
+        style={{ filter: "blur(10px)", opacity: 0.7 }}
       />
       <div className="absolute inset-0 bg-green-800/40" />
       <div className="relative z-10 mb-8 flex flex-col items-center gap-3 text-center">

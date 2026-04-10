@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logoImg from "@/assets/nutrivision-logo.jpeg";
+import logoImg from "@/assets/nutrivision-icon.jpeg";
 
 const SplashScreen = () => {
   const navigate = useNavigate();

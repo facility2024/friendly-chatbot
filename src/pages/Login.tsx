@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Apple, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import nutrivisionLogo from "@/assets/nutrivision-icon.jpeg";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 
@@ -67,9 +68,7 @@ const Login = () => {
       />
       <div className="absolute inset-0 bg-green-800/40" />
       <div className="relative z-10 mb-8 flex flex-col items-center gap-3 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
-          <Apple className="h-10 w-10 text-primary-foreground" />
-        </div>
+        <img src={nutrivisionLogo} alt="Nutrivision" className="h-20 w-20 rounded-2xl object-contain" />
         <h1 className="text-3xl font-bold text-primary-foreground">Nutrivision</h1>
       </div>
 

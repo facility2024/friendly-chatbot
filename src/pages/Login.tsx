@@ -67,14 +67,14 @@ const Login = () => {
         style={{ filter: "blur(10px)", opacity: 0.7 }}
       />
       <div className="absolute inset-0 bg-green-800/40" />
-      <div className="relative z-10 mb-8 flex flex-col items-center gap-3 text-center">
-        <img src={nutrivisionLogo} alt="Nutrivision" className="h-20 w-20 rounded-2xl object-contain" />
-        <h1 className="text-3xl font-bold text-primary-foreground">Nutrivision</h1>
-      </div>
 
       <Card className="relative z-10 w-full max-w-md border-0 shadow-2xl">
         <CardHeader className="pb-2 pt-6 text-center">
-          <h2 className="text-2xl font-bold text-foreground">
+          <div className="flex flex-col items-center gap-2 mb-3">
+            <img src={nutrivisionLogo} alt="Nutrivision" className="h-20 w-20 rounded-2xl object-contain" />
+            <h1 className="text-2xl font-bold text-foreground">Nutrivision</h1>
+          </div>
+          <h2 className="text-xl font-semibold text-foreground">
             {isSignup ? "Criar conta" : "Entrar"}
           </h2>
           <p className="text-base text-muted-foreground">

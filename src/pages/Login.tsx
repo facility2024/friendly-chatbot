@@ -24,7 +24,7 @@ const Login = () => {
 
     try {
       if (isSignup) {
-        const { error } = await supabase.auth.signUp({
+        const { error, data: signUpData } = await supabase.auth.signUp({
           email: form.email,
           password: form.password,
           options: {
@@ -32,10 +32,15 @@ const Login = () => {
               name: form.name,
               whatsapp: form.whatsapp,
             },
+            emailRedirectTo: window.location.origin,
           },
         });
         if (error) throw error;
-        toast({ title: "Conta criada!", description: "Verifique seu e-mail para confirmar." });
+        if (signUpData.session) {
+          navigate("/dashboard");
+          return;
+        }
+        toast({ title: "Conta criada!", description: "Acesse com seu e-mail e senha." });
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email: form.email,

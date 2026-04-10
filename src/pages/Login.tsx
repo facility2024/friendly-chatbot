@@ -1,4 +1,5 @@
 import { useState } from "react";
+import loginBg from "@/assets/login-bg.jpg";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,15 +58,22 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gradient-primary-vertical px-4 py-8">
-      <div className="mb-8 flex flex-col items-center gap-3 text-center">
+    <div className="relative flex min-h-screen flex-col items-center justify-center px-4 py-8 overflow-hidden">
+      <img
+        src={loginBg}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ filter: "blur(8px)", opacity: 0.7 }}
+      />
+      <div className="absolute inset-0 bg-green-800/40" />
+      <div className="relative z-10 mb-8 flex flex-col items-center gap-3 text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
           <Apple className="h-10 w-10 text-primary-foreground" />
         </div>
         <h1 className="text-3xl font-bold text-primary-foreground">Nutrivision</h1>
       </div>
 
-      <Card className="w-full max-w-md border-0 shadow-2xl">
+      <Card className="relative z-10 w-full max-w-md border-0 shadow-2xl">
         <CardHeader className="pb-2 pt-6 text-center">
           <h2 className="text-2xl font-bold text-foreground">
             {isSignup ? "Criar conta" : "Entrar"}

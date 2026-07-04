@@ -2,3 +2,6 @@ project_id = "uybiahzqcrmjpgzhauji"
 
 [functions.admin-users]
 verify_jwt = false
+
+[functions.analyze-food]
+verify_jwt = false

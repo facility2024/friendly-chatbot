@@ -1,9 +1,11 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Camera, Search, X } from "lucide-react";
+import { ArrowLeft, Camera, Search, X, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 const alimentosDB: Record<string, { calorias: number; proteinas: number; carboidratos: number; gorduras: number; fibras: number; porcao: string }> = {
   banana: { calorias: 89, proteinas: 1.1, carboidratos: 22.8, gorduras: 0.3, fibras: 2.6, porcao: "1 unidade (100g)" },
@@ -24,6 +26,8 @@ const CameraAlimento = () => {
   const [alimentoSelecionado, setAlimentoSelecionado] = useState<string | null>(null);
   const [showCamera, setShowCamera] = useState(false);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [aiResult, setAiResult] = useState<any | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -38,18 +42,38 @@ const CameraAlimento = () => {
     }
   };
 
+  const analyzeImage = async (dataUrl: string) => {
+    setAnalyzing(true);
+    setAiResult(null);
+    setAlimentoSelecionado(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("analyze-food", { body: { image: dataUrl } });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const r = (data as any)?.result;
+      if (!r || r.erro) throw new Error("Não consegui identificar o alimento. Tente outra foto.");
+      setAiResult(r);
+    } catch (e) {
+      toast({ title: "Erro na leitura", description: (e as Error).message, variant: "destructive" });
+      // fallback local
+      const foods = Object.keys(alimentosDB);
+      const random = foods[Math.floor(Math.random() * foods.length)];
+      setAlimentoSelecionado(random);
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
   const capturePhoto = () => {
     if (!videoRef.current) return;
     const canvas = document.createElement("canvas");
     canvas.width = videoRef.current.videoWidth;
     canvas.height = videoRef.current.videoHeight;
     canvas.getContext("2d")?.drawImage(videoRef.current, 0, 0);
-    setCapturedImage(canvas.toDataURL("image/jpeg"));
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+    setCapturedImage(dataUrl);
     stopCamera();
-    // Simulate identification
-    const foods = Object.keys(alimentosDB);
-    const random = foods[Math.floor(Math.random() * foods.length)];
-    setAlimentoSelecionado(random);
+    analyzeImage(dataUrl);
   };
 
   const stopCamera = () => {
@@ -62,6 +86,29 @@ const CameraAlimento = () => {
     : [];
 
   const info = alimentoSelecionado ? alimentosDB[alimentoSelecionado] : null;
+  const displayInfo = aiResult
+    ? {
+        nome: aiResult.nome,
+        porcao: aiResult.porcao,
+        calorias: aiResult.calorias,
+        proteinas: aiResult.proteinas,
+        carboidratos: aiResult.carboidratos,
+        gorduras: aiResult.gorduras,
+        fibras: aiResult.fibras,
+        confianca: aiResult.confianca,
+      }
+    : info
+    ? {
+        nome: alimentoSelecionado!,
+        porcao: info.porcao,
+        calorias: info.calorias,
+        proteinas: info.proteinas,
+        carboidratos: info.carboidratos,
+        gorduras: info.gorduras,
+        fibras: info.fibras,
+        confianca: null as number | null,
+      }
+    : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -98,9 +145,21 @@ const CameraAlimento = () => {
           <Card>
             <CardContent className="p-4">
               <img src={capturedImage} alt="Captura" className="w-full rounded-xl" />
-              <p className="mt-3 text-center text-base text-muted-foreground">
-                Alimento identificado: <strong className="text-foreground capitalize">{alimentoSelecionado}</strong>
-              </p>
+              {analyzing ? (
+                <div className="mt-3 flex items-center justify-center gap-2 text-primary">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span className="text-base font-medium">Analisando com IA...</span>
+                </div>
+              ) : aiResult ? (
+                <div className="mt-3 flex items-center justify-center gap-2 text-emerald-600">
+                  <Sparkles className="h-4 w-4" />
+                  <span className="text-sm font-medium">Identificado por IA</span>
+                </div>
+              ) : alimentoSelecionado ? (
+                <p className="mt-3 text-center text-base text-muted-foreground">
+                  Alimento: <strong className="text-foreground capitalize">{alimentoSelecionado}</strong>
+                </p>
+              ) : null}
             </CardContent>
           </Card>
         )}
@@ -114,7 +173,7 @@ const CameraAlimento = () => {
               className="h-14 pl-12 text-lg"
               placeholder="Digite o alimento..."
               value={busca}
-              onChange={(e) => { setBusca(e.target.value); setAlimentoSelecionado(null); }}
+              onChange={(e) => { setBusca(e.target.value); setAlimentoSelecionado(null); setAiResult(null); }}
             />
           </div>
           {resultados.length > 0 && (
@@ -122,7 +181,7 @@ const CameraAlimento = () => {
               {resultados.map((a) => (
                 <button
                   key={a}
-                  onClick={() => { setAlimentoSelecionado(a); setBusca(a); }}
+                  onClick={() => { setAlimentoSelecionado(a); setBusca(a); setAiResult(null); }}
                   className="w-full rounded-lg px-4 py-3 text-left text-base capitalize hover:bg-secondary"
                 >
                   {a}
@@ -133,18 +192,23 @@ const CameraAlimento = () => {
         </div>
 
         {/* Nutritional info */}
-        {info && (
+        {displayInfo && (
           <Card className="border-2 border-primary/20">
             <CardContent className="p-6">
-              <h3 className="mb-1 text-center text-xl font-bold capitalize text-foreground">{alimentoSelecionado}</h3>
-              <p className="mb-5 text-center text-sm text-muted-foreground">{info.porcao}</p>
+              <h3 className="mb-1 text-center text-xl font-bold capitalize text-foreground">{displayInfo.nome}</h3>
+              <p className="mb-1 text-center text-sm text-muted-foreground">{displayInfo.porcao}</p>
+              {displayInfo.confianca != null && (
+                <p className="mb-4 text-center text-xs text-emerald-600 font-medium">
+                  Confiança IA: {displayInfo.confianca}%
+                </p>
+              )}
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { label: "Calorias", value: `${info.calorias} kcal` },
-                  { label: "Proteínas", value: `${info.proteinas}g` },
-                  { label: "Carboidratos", value: `${info.carboidratos}g` },
-                  { label: "Gorduras", value: `${info.gorduras}g` },
-                  { label: "Fibras", value: `${info.fibras}g` },
+                  { label: "Calorias", value: `${displayInfo.calorias} kcal` },
+                  { label: "Proteínas", value: `${displayInfo.proteinas}g` },
+                  { label: "Carboidratos", value: `${displayInfo.carboidratos}g` },
+                  { label: "Gorduras", value: `${displayInfo.gorduras}g` },
+                  { label: "Fibras", value: `${displayInfo.fibras}g` },
                 ].map((item) => (
                   <div key={item.label} className="rounded-xl bg-secondary p-4 text-center">
                     <p className="text-sm text-muted-foreground">{item.label}</p>

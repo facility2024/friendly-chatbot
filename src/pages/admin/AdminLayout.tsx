@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Outlet, Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, Dumbbell, UtensilsCrossed, Store, FileText, Users, LogOut, Menu, X, Apple } from "lucide-react";
+import { LayoutDashboard, Dumbbell, UtensilsCrossed, Store, FileText, Users, LogOut, Menu, X, Apple, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
@@ -12,6 +12,7 @@ const navItems = [
   { label: "Lojas", path: "/admin/lojas", icon: Store },
   { label: "Dicas PDF", path: "/admin/dicas", icon: FileText },
   { label: "Usuários", path: "/admin/usuarios", icon: Users },
+  { label: "IA", path: "/admin/ia", icon: Sparkles },
 ];
 
 const AdminLayout = () => {

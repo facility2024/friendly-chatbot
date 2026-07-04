@@ -23,6 +23,7 @@ import AdminReceitas from "./pages/admin/AdminReceitas";
 import AdminLojas from "./pages/admin/AdminLojas";
 import AdminDicas from "./pages/admin/AdminDicas";
 import AdminUsuarios from "./pages/admin/AdminUsuarios";
+import AdminIA from "./pages/admin/AdminIA";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="lojas" element={<AdminLojas />} />
             <Route path="dicas" element={<AdminDicas />} />
             <Route path="usuarios" element={<AdminUsuarios />} />
+            <Route path="ia" element={<AdminIA />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

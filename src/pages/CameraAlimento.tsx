@@ -33,12 +33,30 @@ const CameraAlimento = () => {
 
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      let stream: MediaStream | null = null;
+      try {
+        // Try to force the rear camera
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { exact: "environment" } },
+          audio: false,
+        });
+      } catch {
+        // Fallback for devices/browsers that don't support "exact"
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "environment" },
+            audio: false,
+          });
+        } catch {
+          // Last fallback: any camera
+          stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        }
+      }
       streamRef.current = stream;
       if (videoRef.current) videoRef.current.srcObject = stream;
       setShowCamera(true);
     } catch {
-      alert("Não foi possível acessar a câmera. Verifique as permissões.");
+      alert("Não foi possível acessar a câmera. Verifique as permissões do navegador.");
     }
   };
 

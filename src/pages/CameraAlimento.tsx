@@ -4,8 +4,8 @@ import { ArrowLeft, Camera, Search, X, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { analyzeFoodDirect } from "@/lib/aiFood";
 
 const alimentosDB: Record<string, { calorias: number; proteinas: number; carboidratos: number; gorduras: number; fibras: number; porcao: string }> = {
   banana: { calorias: 89, proteinas: 1.1, carboidratos: 22.8, gorduras: 0.3, fibras: 2.6, porcao: "1 unidade (100g)" },
@@ -65,10 +65,7 @@ const CameraAlimento = () => {
     setAiResult(null);
     setAlimentoSelecionado(null);
     try {
-      const { data, error } = await supabase.functions.invoke("analyze-food", { body: { image: dataUrl } });
-      if (error) throw error;
-      if ((data as any)?.error) throw new Error((data as any).error);
-      const r = (data as any)?.result;
+      const r = await analyzeFoodDirect({ image: dataUrl });
       if (!r || r.erro) throw new Error("Não consegui identificar o alimento. Tente outra foto.");
       setAiResult(r);
     } catch (e) {

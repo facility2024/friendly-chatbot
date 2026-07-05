@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Loader2, Save, Sparkles, CheckCircle2, XCircle, Eye, EyeOff, Zap } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { analyzeFoodDirect } from "@/lib/aiFood";
 
 type Provider = "openai" | "gemini" | "grok";
 
@@ -63,21 +64,17 @@ const AdminIA = () => {
   };
 
   const test = async () => {
-    if (!apiKey.trim() && !hasSavedKey) {
-      toast({ title: "Cole a chave primeiro", variant: "destructive" });
+    if (!apiKey.trim()) {
+      toast({ title: "Cole a chave para testar", variant: "destructive" });
       return;
     }
     setTesting(true);
     try {
-      const body: any = { food_name: "banana" };
-      if (apiKey.trim()) {
-        body.test_provider = provider;
-        body.test_api_key = apiKey.trim();
-      }
-      const { data, error } = await supabase.functions.invoke("analyze-food", { body });
-      if (error) throw error;
-      if ((data as any)?.error) throw new Error((data as any).error);
-      const r = (data as any)?.result;
+      const r = await analyzeFoodDirect({
+        foodName: "banana",
+        overrideProvider: provider,
+        overrideKey: apiKey.trim(),
+      });
       toast({
         title: "Teste OK ✓",
         description: `Identificou: ${r?.nome ?? "?"} — ${r?.calorias ?? "?"} kcal`,
